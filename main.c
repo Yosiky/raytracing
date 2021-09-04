@@ -56,6 +56,7 @@ Uint32	traceray(t_point3d	*o, t_point3d *d, float minimal, float maximal)
 	float	res[2];
 	Uint32	color;
 
+	len	= INF;
 	color = window->background;
 	for (int i = 0; i < count_figure; i++)
 	{
@@ -111,8 +112,7 @@ void	start(t_window *window)
 	}
 }
 
-void	delete(void	**figures, int n)
-{
+void	delete(void	**figures, int n) {
 	for (int i = 0; i < n; i++)
 		free(figures[i]);
 	free(figures);
@@ -127,19 +127,19 @@ int	main(int argc, char **argv)
 	color |= 127;
 	color |= 127 << 8;
 	color |= 127 << 16;
-	count_figure = 1;
+	count_figure = 3;
 	spheres = (t_sphere **)malloc(sizeof(t_sphere *) * count_figure);
 	ee_set_point(&point, 0, -1, 3);
 	spheres[0] = ee_create_sphere(&point, 1, 255<<16);
-	//ee_set_point(&point, 10, 10, 10);
-	//spheres[1] = ee_create_sphere(&point, 2, 255<<8);
+	ee_set_point(&point, 2, 0, 4);
+	spheres[1] = ee_create_sphere(&point, 1, 255);
+	ee_set_point(&point, -2, 0, 4);
+	spheres[2] = ee_create_sphere(&point, 1, 255<<8);
 	ee_sphere_print(spheres[0]);
-	//ee_sphere_print(spheres[1]);
+	ee_sphere_print(spheres[1]);
 
 	if (argc && argv)
 		write(1, "Start program\n", 14);
-	SDL_Surface	*window_surface;
-
 	if (SDL_Init(SDL_INIT_VIDEO))
 	{
 		printf("Error in SDL_Init\n");
@@ -151,17 +151,11 @@ int	main(int argc, char **argv)
 		printf("Failed to create window\n");
 		return (0);
 	}	
-	window_surface = SDL_GetWindowSurface(window->window);
-	if (!window_surface)
-	{
-		printf("Failed to get the surface from the window\n");
-		return (0);
-	}
 	ee_window_print(window);
 	start(window);
 	//SDL_Delay(5000);
 	printf("End programm\n");
 	ee_delete_window(window);
-	//delete((void **)spheres, count_figure);
+	delete((void **)spheres, count_figure);
 	return (0);
 }
